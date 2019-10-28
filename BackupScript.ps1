@@ -84,14 +84,17 @@ $EmailSMTP = 'smtp.domain.com' #smtp server adress, DNS hostname.
 #Settings - do not change anything from here
 
 $ExcludeString=""
-#[string[]]$excludedArray = $ExcludeDirs -split "," 
 foreach ($Entry in $ExcludeDirs)
 {
-    $Temp="^"+$Entry.Replace("\","\\")
+    #Exclude the directory itself
+    $Temp="^"+$Entry.Replace("\","\\")+"$"
+    $ExcludeString+=$Temp+"|"
+
+    #Exclude the directory's children
+    $Temp="^"+$Entry.Replace("\","\\")+"\\.*"
     $ExcludeString+=$Temp+"|"
 }
 $ExcludeString=$ExcludeString.Substring(0,$ExcludeString.Length-1)
-#$ExcludeString
 [RegEx]$exclude = $ExcludeString
 
 if ($UseStaging -and $Zip)
