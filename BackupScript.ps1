@@ -196,7 +196,7 @@ Function Make-Backup {
         # Use -LiteralPath option to work around known issue with PowerShell FileSystemProvider wildcards.
         # See: https://github.com/PowerShell/PowerShell/issues/6733
 
-        $Files = Get-ChildItem -LiteralPath $Backup -recurse -Force -Directory -ErrorVariable +errItems -ErrorAction SilentlyContinue | 
+        $Files = Get-ChildItem -LiteralPath $Backup -recurse -Attributes D+!ReparsePoint,D+H+!ReparsePoint -ErrorVariable +errItems -ErrorAction SilentlyContinue | 
             ForEach-Object -Process {Add-Member -InputObject $_ -NotePropertyName "ParentFullName" -NotePropertyValue ($_.FullName.Substring(0, $_.FullName.LastIndexOf("\"+$_.Name))) -PassThru -ErrorAction SilentlyContinue} |
             Where-Object {$_.FullName -notmatch $exclude -and $_.ParentFullName -notmatch $exclude} |
             Get-ChildItem -Attributes !D -ErrorVariable +errItems -ErrorAction SilentlyContinue | Where-Object {$_.DirectoryName -notmatch $exclude}
