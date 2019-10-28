@@ -234,10 +234,7 @@ Function Make-Backup {
     }
 }
 
-
 #create Backup Dir
-
-
 
 Create-Backupdir
 Logging "INFO" "----------------------"
@@ -273,10 +270,9 @@ if ($CheckDir -eq $false) {
 
     $Enddate=Get-Date #-format dd.MM.yyyy-HH:mm:ss
     $span = $EndDate - $StartDate
-    $Minutes=$span.Minutes
-    $Seconds=$Span.Seconds
+    $Duration = $("Backup duration " + $span.Hours.ToString() + " hours " + $span.Minutes.ToString() + " minutes " + $span.Seconds.ToString() + " seconds")
 
-    Logging "INFO" "Backupduration $Minutes Minutes and $Seconds Seconds"
+    Logging "INFO" $Duration
     Logging "INFO" "----------------------"
     Logging "INFO" "----------------------" 
 
@@ -319,14 +315,9 @@ if ($CheckDir -eq $false) {
 
         }
 
-
-
-
-
-
         If ($RemoveBackupDestination)
         {
-            Logging "INFO" "Backupduration $Minutes Minutes and $Seconds Seconds"
+            Logging "INFO" $Duration
 
             #Remove-Item -Path $BackupDir -Force -Recurse 
             get-childitem -Path $BackupDir -recurse -Force  | remove-item -Confirm:$false -Recurse
@@ -338,6 +329,3 @@ if ($CheckDir -eq $false) {
 Write-Host "Press any key to close ..."
 
 $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-
-
-
