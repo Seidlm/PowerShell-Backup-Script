@@ -61,7 +61,11 @@ $ClearStaging=$true # When $true, Staging Dir will be cleared
 $Versions="5" #How many of the last Backups you want to keep
 $BackupDirs="C:\Users\seimi\OneDrive - Seidl Michael" #What Folders you want to backup
 
-$ExcludeDirs="C:\Users\seimi\OneDrive - Seidl Michael\0-Temp","C:\Users\seimi\OneDrive - Seidl Michael\0-Temp\Dir2" #This list of Directories will not be copied
+$ExcludeDirs= #This list of Directories will not be copied
+    ($env:SystemDrive + "\Users\.*\AppData\Local"),
+    ($env:SystemDrive + "\Users\.*\AppData\LocalLow"),
+    "C:\Users\seimi\OneDrive - Seidl Michael\0-Temp",
+    "C:\Users\seimi\OneDrive - Seidl Michael\0-Temp\Dir2"
 
 $LogName="Log.txt" #Log Name
 $LoggingLevel="3" #LoggingLevel only for Output in Powershell Window, 1=smart, 3=Heavy
@@ -178,6 +182,7 @@ function Check-Dir {
 #Save all the Files
 Function Make-Backup {
     Logging "INFO" "Started the Backup"
+    $BackupDirFiles = @{} #Hash of BackupDir & Files
     $Files=@()
     $SumMB=0
     $SumItems=0
@@ -186,10 +191,20 @@ Function Make-Backup {
     Logging "INFO" "Count all files and create the Top Level Directories"
 
     foreach ($Backup in $BackupDirs) {
-        $colItems = (Get-ChildItem $Backup -recurse | Where-Object {$_.mode -notmatch "h"} | Measure-Object -property length -sum) 
+        # Get recursive list of files for each Backup Dir once and save in $BackupDirFiles to use later.
+        # Optimize performance by getting included folders first, and then only recursing files for those.
+        # Use -LiteralPath option to work around known issue with PowerShell FileSystemProvider wildcards.
+        # See: https://github.com/PowerShell/PowerShell/issues/6733
+
+        $Files = Get-ChildItem -LiteralPath $Backup -recurse -Force -Directory -ErrorVariable +errItems -ErrorAction SilentlyContinue | 
+            ForEach-Object -Process {Add-Member -InputObject $_ -NotePropertyName "ParentFullName" -NotePropertyValue ($_.FullName.Substring(0, $_.FullName.LastIndexOf("\"+$_.Name))) -PassThru -ErrorAction SilentlyContinue} |
+            Where-Object {$_.FullName -notmatch $exclude -and $_.ParentFullName -notmatch $exclude} |
+            Get-ChildItem -Attributes !D -ErrorVariable +errItems -ErrorAction SilentlyContinue | Where-Object {$_.DirectoryName -notmatch $exclude}
+        $BackupDirFiles.Add($Backup, $Files)
+
+        $colItems = ($Files | Measure-Object -property length -sum) 
         $Items=0
-        $FilesCount += Get-ChildItem $Backup -Recurse | Where-Object {$_.mode -notmatch "h"}  
-        Copy-Item -Path $Backup -Destination $Backupdir -Force -ErrorAction SilentlyContinue
+        Copy-Item -LiteralPath $Backup -Destination $Backupdir -Force -ErrorAction SilentlyContinue | Where-Object {$_.FullName -notmatch $exclude}
         $SumMB+=$colItems.Sum.ToString()
         $SumItems+=$colItems.Count
     }
@@ -197,22 +212,32 @@ Function Make-Backup {
     $TotalMB="{0:N2}" -f ($SumMB / 1MB) + " MB of Files"
     Logging "INFO" "There are $SumItems Files with  $TotalMB to copy"
 
+    #Log any errors from above from building the list of files to backup.
+    [System.Management.Automation.ErrorRecord]$errItem=$null
+    foreach ($errItem in $errItems) {
+        Logging "Error" ("Skipping `"" + $errItem.TargetObject + "`" Error: " + $errItem.CategoryInfo)
+    }
+    Remove-Variable errItem
+    Remove-Variable errItems
+
     foreach ($Backup in $BackupDirs) {
         $Index=$Backup.LastIndexOf("\")
         $SplitBackup=$Backup.substring(0,$Index)
-        $Files = Get-ChildItem $Backup -Recurse  | select * | Where-Object {$_.mode -notmatch "h" -and $_.fullname -notmatch $exclude} | select fullname #$_.mode -notmatch "h" -and 
+        $Files = $BackupDirFiles[$Backup]
 
         foreach ($File in $Files) {
             $restpath = $file.fullname.replace($SplitBackup,"")
             try {
-                Copy-Item  $file.fullname $($Backupdir+$restpath) -Force -ErrorAction SilentlyContinue |Out-Null
-                Logging "INFO" "$file was copied"
+                # Use New-Item to create the destination directory if it doesn't yet exist. Then copy the file.
+                New-Item -Path (Split-Path -Path $($Backupdir+$restpath) -Parent) -ItemType "directory" -Force -ErrorAction SilentlyContinue | Out-Null
+                Copy-Item -LiteralPath $file.fullname $($Backupdir+$restpath) -Force -ErrorAction SilentlyContinue | Out-Null
+                Logging "INFO" $("'" + $File.FullName + "' was copied")
             }
             catch {
                 $ErrorCount++
-                Logging "ERROR" "$file returned an error an was not copied"
+                Logging "ERROR" $("'" + $File.FullName + "' returned an error and was not copied")
             }
-            $Items += (Get-item $file.fullname).Length
+            $Items += (Get-item -LiteralPath $file.fullname).Length
             $status = "Copy file {0} of {1} and copied {3} MB of {4} MB: {2}" -f $count,$SumItems,$file.Name,("{0:N2}" -f ($Items / 1MB)).ToString(),("{0:N2}" -f ($SumMB / 1MB)).ToString()
             $Index=[array]::IndexOf($BackupDirs,$Backup)+1
             $Text="Copy data Location {0} of {1}" -f $Index ,$BackupDirs.Count
