@@ -183,9 +183,9 @@ Function Make-Backup {
     Logging "INFO" "Count all files and create the Top Level Directories"
 
     foreach ($Backup in $BackupDirs) {
-        $colItems = (Get-ChildItem $Backup -recurse | Where-Object {$_.mode -notmatch "h"} | Measure-Object -property length -sum) 
+        $colItems = (Get-ChildItem -LiteralPath $Backup -recurse | Where-Object {$_.mode -notmatch "h"} | Measure-Object -property length -sum) 
         $Items=0
-        $FilesCount += Get-ChildItem $Backup -Recurse | Where-Object {$_.mode -notmatch "h"}  
+        $FilesCount += Get-ChildItem -LiteralPath $Backup -Recurse | Where-Object {$_.mode -notmatch "h"}  
         Copy-Item -Path $Backup -Destination $Backupdir -Force -ErrorAction SilentlyContinue
         $SumMB+=$colItems.Sum.ToString()
         $SumItems+=$colItems.Count
@@ -197,12 +197,12 @@ Function Make-Backup {
     foreach ($Backup in $BackupDirs) {
         $Index=$Backup.LastIndexOf("\")
         $SplitBackup=$Backup.substring(0,$Index)
-        $Files = Get-ChildItem $Backup -Recurse  | select * | Where-Object {$_.mode -notmatch "h" -and $_.fullname -notmatch $exclude} | select fullname #$_.mode -notmatch "h" -and 
+        $Files = Get-ChildItem -LiteralPath $Backup -Recurse  | select * | Where-Object {$_.mode -notmatch "h" -and $_.fullname -notmatch $exclude} | select fullname #$_.mode -notmatch "h" -and 
 
         foreach ($File in $Files) {
             $restpath = $file.fullname.replace($SplitBackup,"")
             try {
-                Copy-Item  $file.fullname $($Backupdir+$restpath) -Force -ErrorAction SilentlyContinue |Out-Null
+                Copy-Item -LiteralPath $file.fullname $($Backupdir+$restpath) -Force -ErrorAction SilentlyContinue |Out-Null
                 Logging "INFO" "$file was copied"
             }
             catch {
