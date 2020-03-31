@@ -49,6 +49,7 @@ Change LoggingLevel to 3 an get more output in Powershell Windows
 
 # Version 1.0 - RTM
 
+# Notes
     www.techguy.at
     www.facebook.com/TechguyAT
     www.twitter.com/TechguyAT
