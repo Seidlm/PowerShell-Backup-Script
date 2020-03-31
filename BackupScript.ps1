@@ -8,7 +8,7 @@
 # GitHub: https://github.com/Seidlm/PowerShell-Backup-Script
 # PSVersion tested: 3 and 4
 #
-# PowerShell Self Service Web Portal at www.au2mator.com
+# PowerShell Self Service Web Portal at www.au2mator.com/PowerShell
 #
 #
 # Description: Copies the Bakupdirs to the Destination
