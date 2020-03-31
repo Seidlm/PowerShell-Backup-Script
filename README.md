@@ -8,7 +8,7 @@
     PSVersion tested: 3 and 4
 
 
-# PowerShell Self Service Web Portal at www.au2mator.com
+# PowerShell Self Service Web Portal at www.au2mator.com/PowerShell
 
 
 # Description: 
