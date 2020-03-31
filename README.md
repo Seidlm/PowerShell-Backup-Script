@@ -1,11 +1,12 @@
 # Name: BackupScript.ps1
- Creator: Michael Seidl aka Techguy
- CreationDate: 21.01.2014
- LastModified: 31.03.2020
- Version: 1.5
- Doc: http://www.techguy.at/tag/backupscript/
- GitHub: https://github.com/Seidlm/PowerShell-Backup-Script
- PSVersion tested: 3 and 4
+    Creator: Michael Seidl aka Techguy
+    CreationDate: 21.01.2014
+    LastModified: 31.03.2020
+    Version: 1.5
+    Doc: http://www.techguy.at/tag/backupscript/
+    GitHub: https://github.com/Seidlm/PowerShell-Backup-Script
+    PSVersion tested: 3 and 4
+
 
 # PowerShell Self Service Web Portal at www.au2mator.com
 
