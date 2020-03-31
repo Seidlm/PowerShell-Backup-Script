@@ -1,7 +1,6 @@
-########################################################
- Name: BackupScript.ps1                              
- Creator: Michael Seidl aka Techguy                    
- CreationDate: 21.01.2014                              
+# Name: BackupScript.ps1
+ Creator: Michael Seidl aka Techguy
+ CreationDate: 21.01.2014
  LastModified: 31.03.2020
  Version: 1.5
  Doc: http://www.techguy.at/tag/backupscript/
@@ -48,10 +47,8 @@ Change LoggingLevel to 3 an get more output in Powershell Windows
     CHANGE: Define the Log Name in Variables
 
 # Version 1.0 - RTM
-########################################################
 
-www.techguy.at                                        
-www.facebook.com/TechguyAT                            
-www.twitter.com/TechguyAT                             
-michael@techguy.at 
-#######################################################
+www.techguy.at
+www.facebook.com/TechguyAT
+www.twitter.com/TechguyAT
+michael@techguy.at
