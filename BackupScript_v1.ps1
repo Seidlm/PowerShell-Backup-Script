@@ -19,7 +19,7 @@
 # Change LoggingLevel to 3 an get more output in Powershell Windows
 # 
 #
-########################################################
+##########################ync##############################
 #
 # www.techguy.at                                        
 # www.facebook.com/TechguyAT                            

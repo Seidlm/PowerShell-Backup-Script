@@ -1,11 +1,11 @@
 # Name: BackupScript.ps1
     Creator: Michael Seidl aka Techguy
-    CreationDate: 21.01.2014
-    LastModified: 31.03.2020
-    Version: 1.5
+    CreationDate: 05.08.2021 
+    LastModified: 05.08.2021 
+    Version: 2.0
     Doc: http://www.techguy.at/tag/backupscript/
     GitHub: https://github.com/Seidlm/PowerShell-Backup-Script
-    PSVersion tested: 3 and 4
+    PSVersion tested: 5
 
 
 # PowerShell Self Service Web Portal at www.au2mator.com/PowerShell
@@ -14,11 +14,13 @@
 # Description: 
 Copies the Bakupdirs to the Destination
 You can configure more than one Backupdirs, every Dir
-wil be copied to the Destination. A Progress Bar
-is showing the Status of copied MB to the total MB
+wil be copied to the Destination. 
 Only Change Variables in Variables Section
 Change LoggingLevel to 3 an get more output in Powershell Windows
  
+# Version 2.0 (05.08.2021)
+Published v2 Verion
+
 # Version 1.5 (31.03.2020)
     FIX: Github: Symbolic Links are now supported
     FIX: Github: Sibling Folders
