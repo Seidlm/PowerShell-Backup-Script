@@ -31,21 +31,18 @@
 ########################################################
 
 #Variables, only Change here
-$Destination = "\\SVATHOME002\Backup$\NB BaseIT" #Copy the Files to this Location
-$Staging = "C:\Users\seimi\Downloads\Staging"
+$Destination = "C:\temp\_BAckup" #Copy the Files to this Location
+$Staging = "C:\temp\_Staging"
 $ClearStaging = $true # When $true, Staging Dir will be cleared
 $Versions = "15" #How many of the last Backups you want to keep
-$BackupDirs = "C:\Users\seimi\Documents" #What Folders you want to backup
+$BackupDirs = "C:\Users\seimi\Documents","C:\Program Files (x86)\Common Files" #What Folders you want to backup
 
-$ExcludeDirs = #This list of Directories will not be copied
-($env:SystemDrive + "\Users\.*\AppData\Local")
-#($env:SystemDrive + "\Users\.*\AppData\LocalLow"),
-#"C:\Users\seimi\OneDrive - Seidl Michael\0-Temp",
-#"C:\Users\seimi\OneDrive - Seidl Michael\0-Temp\Dir2"
+$ExcludeDirs = ($env:SystemDrive + "\Users\.*\AppData\Local"),"C:\Program Files (x86)\Common Files\Adobe" #This list of Directories will not be copied
+
 
 $LogfileName = "Log" #Log Name
 $LoggingLevel = "3" #LoggingLevel only for Output in Powershell Window, 1=smart, 3=Heavy
-$Zip = $true #Zip the Backup Destination
+$Zip = $false #Zip the Backup Destination
 $Use7ZIP = $false #Make sure it is installed
 $RemoveBackupDestination = $true #Remove copied files after Zip, only if $Zip is true
 $UseStaging = $false #only if you use ZIP, than we copy file to Staging, zip it and copy the ZIP to destination, like Staging, and to save NetworkBandwith
@@ -88,7 +85,7 @@ else {
 
 
 #$BackupdirTemp=$Temp +"\Backup-"+ (Get-Date -format yyyy-MM-dd)+"-"+(Get-Random -Maximum 100000)+"\"
-$logPath = $Backupdir
+$logPath = $Destination
 
 $Items = 0
 $Count = 0
@@ -263,7 +260,7 @@ Write-au2matorLog -Type Info -Text "----------------------"
 Write-au2matorLog -Type Info -Text "Start the Script"
 
 #Check if Backupdir needs to be cleaned and create Backupdir
-$Count = (Get-ChildItem $Destination | where { $_.Attributes -eq "Directory" }).count
+$Count = (Get-ChildItem $Destination | Where-Object { $_.Attributes -eq "Directory" }).count
 Write-au2matorLog -Type Info -Text "Check if there are more than $Versions Directories in the Backupdir"
 
 if ($count -gt $Versions) {
