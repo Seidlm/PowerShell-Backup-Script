@@ -19,7 +19,7 @@ Only Change Variables in Variables Section
 Change LoggingLevel to 3 an get more output in Powershell Windows
  
 # Version 2.0 (05.08.2021)
-Published v2 Verion
+    Published v2 Verion
 
 # Version 1.5 (31.03.2020)
     FIX: Github: Symbolic Links are now supported
