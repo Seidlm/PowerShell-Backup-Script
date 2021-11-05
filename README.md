@@ -20,7 +20,7 @@ Change LoggingLevel to 3 an get more output in Powershell Windows
  
 
 # Version 2.1 (05.11.2021)
-    -Root Files are now inlcuded in Backup
+    FIX: Files are now inlcuded in Backup
 
 # Version 2.0 (05.08.2021)
     Published v2 Verion
