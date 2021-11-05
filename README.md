@@ -1,8 +1,8 @@
 # Name: BackupScript.ps1
     Creator: Michael Seidl aka Techguy
     CreationDate: 05.08.2021 
-    LastModified: 05.08.2021 
-    Version: 2.0
+    LastModified: 05.11.2021 
+    Version: 2.1
     Doc: http://www.techguy.at/tag/backupscript/
     GitHub: https://github.com/Seidlm/PowerShell-Backup-Script
     PSVersion tested: 5
@@ -21,7 +21,6 @@ Change LoggingLevel to 3 an get more output in Powershell Windows
 
 # Version 2.1 (05.11.2021)
     -Root Files are now inlcuded in Backup
-
 
 # Version 2.0 (05.08.2021)
     Published v2 Verion
