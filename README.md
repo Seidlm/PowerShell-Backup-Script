@@ -8,7 +8,7 @@
     PSVersion tested: 5
 
 
-# PowerShell Self Service Web Portal at www.au2mator.com/PowerShell
+# PowerShell Self Service Web Portal at https://www.au2mator.com/PowerShell
 
 
 # Description: 
@@ -18,6 +18,11 @@ wil be copied to the Destination.
 Only Change Variables in Variables Section
 Change LoggingLevel to 3 an get more output in Powershell Windows
  
+
+# Version 2.1 (05.11.2021)
+    -Root Files are now inlcuded in Backup
+
+
 # Version 2.0 (05.08.2021)
     Published v2 Verion
 
