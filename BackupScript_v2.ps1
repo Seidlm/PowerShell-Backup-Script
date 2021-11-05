@@ -29,10 +29,6 @@
 ########################################################
 
 
-
-
-
-
 #Variables, only Change here
 $Destination = "C:\temp\_Backup" #Copy the Files to this Location
 
@@ -50,9 +46,6 @@ $UseStaging = $false #only if you use ZIP, than we copy file to Staging, zip it 
 $StagingPath = "C:\temp\_Staging"
 
 $RemoveBackupDestination = $true #Remove copied files after Zip, only if $Zip is true
-
-
-
 
 
 #region Functions
@@ -98,7 +91,6 @@ function Write-au2matorLog {
 $PreCheck = $true
 $BackUpCheck = $false
 $FinalBackupdirs = @()
-
 
 
 #SCRIPT
@@ -156,10 +148,7 @@ catch {
     Write-au2matorLog -Type ERROR -Text "Failed to Create Backupdir $BackupDestination"
     Write-au2matorLog -Type ERROR -Text $Error
     $PreCheck = $false
-
 }
-
-
 
 
 ## BACKUP
@@ -263,25 +252,13 @@ if ($PreCheck) {
             Write-au2matorLog -Type ERROR -Text "Failed to Backup"
             Write-au2matorLog -Type ERROR -Text $Error
             $BackUpCheck = $false
-
-
         }
     }
     catch {
         Write-au2matorLog -Type ERROR -Text "Failed to Measure Backupdir"
         Write-au2matorLog -Type ERROR -Text $Error
         $BackUpCheck = $false
-    
-
-
-
     }
-
-
-
-
-
-
 }
 else {
     Write-au2matorLog -Type ERROR -Text "PreCheck failed so do not run Backup"
@@ -289,18 +266,12 @@ else {
 }
 
 
-
-
-
 ## ZIP
 if ($BackUpCheck) {
     Write-au2matorLog -Type INFO -Text "BAckUpCheck is fine, so lets se if we need to ZIP"
-
     
     if ($ZIP) {
         Write-au2matorLog -Type INFO -Text "ZIP is on, so lets go"
-
-
 
         if ($Use7ZIP) {
             Write-au2matorLog -Type INFO -Text "We should use 7Zip for this"
@@ -309,17 +280,12 @@ if ($BackUpCheck) {
                 Write-au2matorLog -Type INFO -Text "Check for the 7ZIP Module"
                 if (Get-Module -Name 7Zip4Powershell) {
                     Write-au2matorLog -Type INFO -Text "7ZIP Module is installed"
-
                 }
                 else {
                 
                     Write-au2matorLog -Type INFO -Text "7ZIP Module is not installed, try to install"
                     Install-Module -Name 7Zip4Powershell -Force
                     Import-Module 7Zip4Powershell
-
-                    
-
-
                 }
 
                 $Zip = $StagingPath + ("\" + $BackupDestination.Replace($Destination, '').Replace('\', '') + ".zip")
@@ -330,8 +296,6 @@ if ($BackUpCheck) {
                 Write-au2matorLog -Type Info -Text "Move Zip to Destination"
                 Move-Item -Path $Zip -Destination $Destination
 
-
-
                 $ZIPCheck = $true
             }
             catch {
@@ -339,8 +303,6 @@ if ($BackUpCheck) {
                 Write-au2matorLog -Type ERROR -Text $Error
                 $ZIPCheck = $false
             }
-
-
         }
         else {
         
