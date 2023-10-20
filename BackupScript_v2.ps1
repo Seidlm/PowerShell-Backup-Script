@@ -182,15 +182,16 @@ if ($PreCheck) {
         
         foreach ($Backup in $FinalBackupdirs) {
 
-            $Files = Get-ChildItem -LiteralPath $Backup -recurse -Attributes D+!ReparsePoint, D+H+!ReparsePoint -ErrorVariable +errItems -ErrorAction SilentlyContinue | 
+            $Files1 = Get-ChildItem -LiteralPath $Backup -recurse -Attributes D+!ReparsePoint, D+H+!ReparsePoint -ErrorVariable +errItems -ErrorAction SilentlyContinue | 
             ForEach-Object -Process { Add-Member -InputObject $_ -NotePropertyName "ParentFullName" -NotePropertyValue ($_.FullName.Substring(0, $_.FullName.LastIndexOf("\" + $_.Name))) -PassThru -ErrorAction SilentlyContinue } |
             Where-Object { $_.FullName -notmatch $exclude -and $_.ParentFullName -notmatch $exclude } |
             Get-ChildItem -Attributes !D -ErrorVariable +errItems -ErrorAction SilentlyContinue | Where-Object { $_.DirectoryName -notmatch $exclude }
             #$BackupDirFiles.Add($Backup, $Files)
 
-            $Files+= Get-ChildItem -LiteralPath $Backup  | 
+            $Files2= Get-ChildItem -LiteralPath $Backup  | 
             ForEach-Object -Process { Add-Member -InputObject $_ -NotePropertyName "ParentFullName" -NotePropertyValue ($_.FullName.Substring(0, $_.FullName.LastIndexOf("\" + $_.Name))) -PassThru -ErrorAction SilentlyContinue } |
             Get-ChildItem -Attributes !D -ErrorVariable +errItems -ErrorAction SilentlyContinue
+            $Files = $files1 + $Files2
             $BackupDirFiles.Add($Backup, $Files)
 
     
@@ -272,6 +273,18 @@ if ($BackUpCheck) {
     
     if ($ZIP) {
         Write-au2matorLog -Type INFO -Text "ZIP is on, so lets go"
+        if (!(Test-Path -Path $StagingPath)) {
+            try {
+                $null = New-Item -Path $StagingPath -ItemType Directory
+                Write-Verbose ("Path: ""{0}"" was created." -f$StagingPath)
+            }
+            catch {
+                Write-Verbose ("Path: ""{0}"" couldn't be created." -f $StagingPath)
+            }
+        }
+        else {
+            Write-Verbose ("Path: ""{0}"" already exists." -f $StagingPath)
+        }
 
         if ($Use7ZIP) {
             Write-au2matorLog -Type INFO -Text "We should use 7Zip for this"
@@ -305,7 +318,12 @@ if ($BackUpCheck) {
             }
         }
         else {
-        
+            Write-au2matorLog -Type Info -Text "Compress File"
+            $Zip = $StagingPath + ("\" + $BackupDestination.Replace($Destination, '').Replace('\', '') + ".zip")
+            Compress-Archive -Path $BackupDestination -DestinationPath $Zip
+            Write-au2matorLog -Type Info -Text "Move Zip to Destination"
+            Move-Item -Path $Zip -Destination $Destination
+            $ZIPCheck = $true        
         }
     }
     else {
