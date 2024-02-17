@@ -1,3 +1,5 @@
+This Script is not longer maintained. Feel free to adapt it as you need it.
+
 # Name: BackupScript.ps1
     Creator: Michael Seidl aka Techguy
     CreationDate: 05.08.2021 
